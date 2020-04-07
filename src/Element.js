@@ -9,6 +9,8 @@ class Element extends React.Component {
       catFile: null,
       dogIsLoaded: false,
       dogFile: null,
+      numberInfoIsLoaded: false,
+      numberInfo: null,
     };
   }
   componentDidMount() {
@@ -29,33 +31,63 @@ class Element extends React.Component {
           dogFile: result.url,
         });
       });
+    fetch("http://numbersapi.com/" + Math.floor(Math.random() * 100))
+      .then((response) => response.text())
+      .then((res) => {
+        this.setState({
+          numberInfoIsLoaded: true,
+          numberInfo: res,
+        });
+      });
   }
   render() {
-    const { error, catIsLoaded, catFile, dogIsLoaded, dogFile } = this.state;
+    const {
+      error,
+      catIsLoaded,
+      catFile,
+      dogIsLoaded,
+      dogFile,
+      numberInfoIsLoaded,
+      numberInfo,
+    } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;
-    } else if (!catIsLoaded || !dogIsLoaded) {
+    } else if (!catIsLoaded || !dogIsLoaded || !numberInfoIsLoaded) {
       return <div>Loading...</div>;
     } else if (dogFile.includes(".mp4")) {
       return (
         <div>
-          <img src={catFile} alt="cat" />;
-          <video width="400" controls>
-            <source src={dogFile} />
-            <track
-              src=""
-              kind="captions"
-              srcLang="en"
-              label="english_captions"
-            />
-          </video>
+          <div className="full-line">
+            <span>{numberInfo}</span>
+          </div>
+          <div className="image-left">
+            <img src={catFile} alt="cat" />
+          </div>
+          <div className="image-right">
+            <video width="400" controls>
+              <source src={dogFile} />
+              <track
+                src=""
+                kind="captions"
+                srcLang="en"
+                label="english_captions"
+              />
+            </video>
+          </div>
         </div>
       );
     } else {
       return (
         <div>
-          <img src={catFile} alt="cat" />;
-          <img src={dogFile} alt="dog" />;
+          <div className="full-line">
+            <span>{numberInfo}</span>
+          </div>
+          <div className="image-left">
+            <img src={catFile} alt="cat" />
+          </div>
+          <div className="image-right">
+            <img src={dogFile} alt="dog" />
+          </div>
         </div>
       );
     }
